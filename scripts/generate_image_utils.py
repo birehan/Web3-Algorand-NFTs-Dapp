@@ -64,7 +64,6 @@ def generate_image_variation(image_src: str) -> str:
         client = OpenAI(api_key=api_key)
         response = client.images.create_variation(
             image=open(image_src, "rb"),
-            model="dall-e-3",
             n=2,
             size="1024x1024"
         )
@@ -192,18 +191,17 @@ def customize_certificate(full_name: str, course_name: str, date_of_issue: str, 
         draw = ImageDraw.Draw(background_pil)
 
         # Define font size and color
-        font_large = ImageFont.load_default()  # Adjust as needed
-        font_medium = ImageFont.load_default()  # Adjust as needed
-        font_color = (255, 255, 255)
+        font_large = ImageFont.load_default(size=24)  # Adjust as needed
+        font_medium = ImageFont.load_default(size=24)  # Adjust as needed
+        font_color = (59, 31, 24)
 
         # Add text to the certificate
-        draw.text((120, 100), 'Certificate of Completion', font=font_large, fill=font_color)
-        draw.text((120, 200), 'This certifies that', font=font_medium, fill=font_color)
-        draw.text((120, 300), full_name, font=font_large, fill=font_color)
-        draw.text((120, 400), 'Has successfully completed the', font=font_medium, fill=font_color)
-        draw.text((120, 500), course_name, font=font_large, fill=font_color)
-        draw.text((120, 600), 'Date of Issue:', font=font_medium, fill=font_color)
-        draw.text((320, 600), date_of_issue, font=font_medium, fill=font_color)
+        draw.text((264, 430), 'This certifies that', font=font_medium, fill=font_color)
+        draw.text((460, 430), full_name, font=font_large, fill=font_color)
+        draw.text((264, 485), 'Has successfully completed the', font=font_medium, fill=font_color)
+        draw.text((264, 540), course_name, font=font_large, fill=font_color)
+        draw.text((320, 595), 'Date of Issue:', font=font_medium, fill=font_color)
+        draw.text((470, 595), date_of_issue, font=font_medium, fill=font_color)
 
         # Paste the academy logo onto the certificate
         logo_image_pil = Image.fromarray(logo_image)
@@ -211,8 +209,8 @@ def customize_certificate(full_name: str, course_name: str, date_of_issue: str, 
         background_pil.paste(logo_image_pil, (50, 50), logo_image_pil)
 
         # Add footer text
-        footer_text = 'This certificate is hereby issued in recognition of the successful completion of the specified challenge. Congratulations!'
-        draw.text((120, 700), footer_text, font=font_medium, fill=font_color)
+        # footer_text = 'This certificate is hereby issued in recognition of the successful completion of the specified challenge. Congratulations!'
+        # draw.text((120, 700), footer_text, font=font_medium, fill=font_color)
 
         # Convert back to CV2 image to save or display
         final_certificate = cv2.cvtColor(np.array(background_pil), cv2.COLOR_RGB2BGR)
