@@ -9,7 +9,7 @@ End-to-End Web3 dApps: certificate generation, distribution, and value transfer 
 ## Overview
 
 End-to-end Web3 dapps on the Algorand Blockchain that will help 10 Academy generate and distribute Non-Fungible Tokens (NFTs) as certificates that will represent the successful completion of a weekly challenge to trainees, and allow trainees with NFTs to interact with a smart contract to perform pre-defined actions.  
-
+<img alt="" src="https://github.com/birehan/Web3-Algorand-NFTs-Dapp/blob/main/screenshots/Screenshot%20from%202024-01-13%2019-36-41.png" />
 
 ## About
 
