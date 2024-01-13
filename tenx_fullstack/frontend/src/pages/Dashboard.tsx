@@ -1,10 +1,10 @@
-import { Suspense, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Outlet, useNavigate } from 'react-router-dom'
-import Sidebar from '../components/Sidebar'
-import Header from '../components/Header'
+import { useNavigate } from 'react-router-dom'
+import Certificates from '../components/Certificates'
 import DesktopSidebar from '../components/DesktopSidebar'
-import Loading from '../components/Loading'
+import Header from '../components/Header'
+import Sidebar from '../components/Sidebar'
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -28,9 +28,10 @@ export default function Dashboard() {
         <div className="lg:pl-72">
           <Header setSidebarOpen={setSidebarOpen} />
           <main className="py-6 px-6 xl:px-20">
-            <Suspense fallback={<Loading />}>
+            <Certificates />
+            {/* <Suspense fallback={<Loading />}>
               <Outlet />
-            </Suspense>
+            </Suspense> */}
           </main>
         </div>
       </div>

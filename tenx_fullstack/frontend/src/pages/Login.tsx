@@ -60,7 +60,7 @@ export default function Login() {
 
                 <div className="text-sm leading-6">
                   <Link to="/auth/forgetpassword" className="font-semibold text-primaryColor hover:text-primaryColorHover">
-                    Don't have accout, <button></button>
+                    Don't have accout, <button>Register</button>
                   </Link>
                 </div>
               </div>

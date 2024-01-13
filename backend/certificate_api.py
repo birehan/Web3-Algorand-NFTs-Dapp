@@ -103,6 +103,11 @@ def create_certificate():
 @jwt_required()
 def request_optin(certificate_id):
     try:
+        password = request.json.get('password')
+
+        if not password:
+            return generate_response(False, None, "Missing required fields"), 400
+        
         current_user_id = get_jwt_identity()
         certificate = Certificate.query.get(certificate_id)
 
@@ -117,17 +122,10 @@ def request_optin(certificate_id):
         if not sender_user:
             return generate_response(False, None, "Sender User does not exist"), 400
         
-        stored_wallet_str = session.get('wallet', None)
-
-        if stored_wallet_str:
-            wallet = pickle.loads(stored_wallet_str)
-        else:
-            return generate_response(False, None, "Wallet does not exist"), 400
-
-        # Perform opt-in for the asset
         results = algorand.opt_in_asset(
             sender_address=sender_user.account_address,
-            sender_private_key=algorand.get_private_key(wallet, sender_user.account_address),
+            password=password,
+            username=sender_user.username,
             nft_id=certificate.nft_id
         )
 
@@ -160,6 +158,12 @@ def request_optin(certificate_id):
 @jwt_required()
 def approve_optin(certificate_id):
     try:
+        password = request.json.get('password')
+
+        if not password:
+            return generate_response(False, None, "Missing required fields"), 400
+        
+
         current_user_id = get_jwt_identity()
         certificate = Certificate.query.get(certificate_id)
 
@@ -178,17 +182,12 @@ def approve_optin(certificate_id):
         if not receiving_user:
             return generate_response(False, None, "Receiving User does not exist"), 400
 
-        stored_wallet_str = session.get('wallet', None)
-
-        if stored_wallet_str:
-            wallet = pickle.loads(stored_wallet_str)
-        else:
-            return generate_response(False, None, "Wallet does not exist"), 400
-
+     
         # Perform opt-in for the asset
         results = algorand.transfer_asset(
             sender_address=sender_user.account_address,
-            sender_private_key=algorand.get_private_key(wallet, sender_user.account_address),
+            password=password,
+            username=sender_user.username,
             nft_id=certificate.nft_id,
             receiver_address=receiving_user.account_address
         )
@@ -229,13 +228,13 @@ def get_certificates():
 
         if not current_user:
             return generate_response(False, None, "User not found"), 404
-
         if current_user.role == UserRole.ISSUER:
             # If the user is an Issuer, get all certificates with staff_id
             certificates = Certificate.query.filter_by(staff_id=current_user_id).all()
         else:
             # If the user is not an Issuer, get all certificates with user_id
             certificates = Certificate.query.filter_by(user_id=current_user_id).all()
+
 
         certificate_list = []
 

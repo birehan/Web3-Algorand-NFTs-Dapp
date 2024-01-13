@@ -1,8 +1,10 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
+import { GrCertificate } from 'react-icons/gr'
 
-import { UsersIcon, XMarkIcon } from '@heroicons/react/24/outline'
-const navigation = [{ name: 'Alumni', href: '/alumnis', icon: UsersIcon, current: false }]
+import { XMarkIcon } from '@heroicons/react/24/outline'
+import { useSelector } from 'react-redux'
+const navigation = [{ name: 'Certificates', href: '/', icon: GrCertificate, current: false }]
 
 interface Props {
   sidebarOpen: boolean
@@ -14,6 +16,8 @@ function classNames(...classes: string[]) {
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: Props) => {
+  const { user } = useSelector((state: any) => state.auth)
+
   return (
     <Transition.Root show={sidebarOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
@@ -59,9 +63,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: Props) => {
               {/* Sidebar component, swap this element with another sidebar if you like */}
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                 <div className="flex h-16 shrink-0 items-center">
-                  <img className="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
+                  <img className="h-8 w-auto" src="src/assets/10x_logo.png" alt="Your Company" />
                 </div>
+
                 <nav className="flex flex-1 flex-col">
+                  <div>{user?.role}</div>
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
                     <li>
                       <ul role="list" className="-mx-2 space-y-1">

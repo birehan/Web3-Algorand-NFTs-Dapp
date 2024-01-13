@@ -18,6 +18,12 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState: authInitialState,
   reducers: {
+    GetCertificates: (state: authState, { payload: user }: PayloadAction<AuthType>) => {
+      state.isLoading = true
+      state.error = ''
+      state.user = null
+    },
+
     LoginAction: (state: authState, { payload: user }: PayloadAction<AuthType>) => {
       state.isLoading = true
       state.error = ''

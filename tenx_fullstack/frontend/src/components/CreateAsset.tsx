@@ -15,8 +15,6 @@ const CreateAsset = ({ openModal, setModalState }: TransactInterface) => {
   const [receiverAddress, setReceiverAddress] = useState<string>('')
   const [pinataUrl, setPinataUrl] = useState<string>('')
 
-
-
   const algodConfig = getAlgodConfigFromViteEnvironment()
   const algodClient = algokit.getAlgoClient({
     server: algodConfig.server,

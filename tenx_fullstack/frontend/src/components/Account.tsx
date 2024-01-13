@@ -4,12 +4,19 @@ import { ellipseAddress } from '../utils/ellipseAddress'
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
 
 const Account = () => {
-  const { activeAddress } = useWallet()
+  const { activeAddress, getAssets } = useWallet()
   const algoConfig = getAlgodConfigFromViteEnvironment()
 
   const dappFlowNetworkName = useMemo(() => {
     return algoConfig.network === '' ? 'sandbox' : algoConfig.network.toLocaleLowerCase()
   }, [algoConfig.network])
+
+  const getAssetsFunc = async () => {
+    const assets = await getAssets()
+    console.log(assets)
+  }
+
+  getAssetsFunc()
 
   return (
     <div>

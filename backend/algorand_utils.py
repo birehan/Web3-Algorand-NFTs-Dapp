@@ -289,10 +289,12 @@ class Algorand:
             logging.error(f"Error login user: {e}")
             return None
 
-    def opt_in_asset(self, nft_id, sender_address, sender_private_key):
+    def opt_in_asset(self, nft_id, sender_address, username, password):
         try:
             algod_client = self.set_up_algod_client()
             sp = algod_client.suggested_params()
+            wallet = self.login_user(username, password)
+            sender_private_key = self.get_private_key(wallet, sender_address)
             # Create opt-in transaction
             # asset transfer from me to me for asset id we want to opt-in to with amt==0
             optin_txn = transaction.AssetOptInTxn(
@@ -310,11 +312,14 @@ class Algorand:
             logging.error(f"Error optin asset: {e}")
             return None
 
-    def transfer_asset(self, sender_address, sender_private_key, receiver_address, nft_id):
+    def transfer_asset(self, sender_address, username, password, receiver_address, nft_id):
       try:
         algod_client = self.set_up_algod_client()
         sp = algod_client.suggested_params()
         # Create transfer transaction
+        wallet = self.login_user(username, password)
+        sender_private_key = self.get_private_key(wallet, sender_address)
+        
         xfer_txn = transaction.AssetTransferTxn(
             sender=sender_address,
             sp=sp,

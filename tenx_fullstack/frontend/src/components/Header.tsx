@@ -4,7 +4,6 @@ import { Bars3Icon } from '@heroicons/react/24/outline'
 import { Fragment } from 'react'
 import { MdOutlineAccountCircle } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { LogOutAction } from '../redux/authSlice'
 
 function classNames(...classes: string[]) {
@@ -57,7 +56,7 @@ const Header = ({ setSidebarOpen }: Props) => {
               <MdOutlineAccountCircle className="w-6 h-6" />
               <span className="hidden lg:flex lg:items-center">
                 <span className="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
-                  {user?.userName}
+                  {user?.username}
                 </span>
                 <ChevronDownIcon className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
               </span>
@@ -72,17 +71,6 @@ const Header = ({ setSidebarOpen }: Props) => {
               leaveTo="transform opacity-0 scale-95"
             >
               <Menu.Items className="absolute right-0 z-10 mt-2.5 w-36 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-                <Menu.Item>
-                  {({ active }: any) => (
-                    <Link
-                      to="/auth/changePassword"
-                      className={classNames(active ? 'bg-gray-50' : '', 'block px-3 py-1 text-sm leading-6 text-gray-900')}
-                    >
-                      Change Password
-                    </Link>
-                  )}
-                </Menu.Item>
-
                 <Menu.Item>
                   {({ active }: any) => (
                     <div

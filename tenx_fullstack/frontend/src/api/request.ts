@@ -4,11 +4,14 @@ import { ApiResponse } from '../interfaces/types'
 // axios.defaults.baseURL = process.env.REACT_APP_API_URL
 axios.defaults.baseURL = 'http://127.0.0.1:5000/api/v1'
 
-export const setUpAxiosIntercept = (user: { token: string }) => {
+export const setUpAxiosIntercept = (user: { access_token: string }) => {
   axios.interceptors.request.use((config) => {
-    if (user?.token) {
-      config.headers.Authorization = `Bearer ${user.token}`
+    if (user?.access_token) {
+      config.headers.Authorization = `Bearer ${user.access_token}`
     }
+
+    console.log('user: ', user)
+    console.log('acces: ', user?.access_token)
 
     return config
   })
