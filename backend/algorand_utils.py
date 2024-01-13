@@ -175,7 +175,7 @@ class Algorand:
             logging.error(f"Error creating user: {e}")
             return None
 
-    def logi_user(self, username, password):
+    def login_user(self, username, password):
         """
         """
 
@@ -245,9 +245,119 @@ class Algorand:
         """
         return mnemonic.to_private_key(mnemonic=mnemonic_str)
 
+    def get_private_key(self, wallet, account):
+        try:
+            private_key = wallet.export_key(account)
+            logging.info(f"get private key successfully")
+            return private_key
+        
+        except Exception as e:
+            logging.error(f"Error getting private key: {e}")
+            return None
   
 
     
-    
+    def create_asset(self, sender_address, sender_private_key, asset_url, asset_name):
+        try:
+            algod_client = self.set_up_algod_client()
+            sp = algod_client.suggested_params()
 
+            txn = transaction.AssetConfigTxn(
+                sender=sender_address,
+                sp=sp,
+                default_frozen=False,
+                unit_name="rug",
+                asset_name=asset_name,
+                manager=sender_address,
+                reserve=sender_address,
+                freeze=sender_address,
+                clawback=sender_address,
+                url=asset_url,
+                total=1000,
+                decimals=0,
+            )
+
+            # Sign with secret key of creator
+            stxn = txn.sign(sender_private_key)
+            txid = algod_client.send_transaction(stxn)
+            
+            # Wait for the transaction to be confirmed
+            results = transaction.wait_for_confirmation(algod_client, txid, 4)
+            logging.info(f"Result confirmed in round: {results['confirmed-round']}")
+            return results["asset-index"]
+        except Exception as e:
+            logging.error(f"Error login user: {e}")
+            return None
+
+    def opt_in_asset(self, nft_id, sender_address, username, password):
+        try:
+            algod_client = self.set_up_algod_client()
+            sp = algod_client.suggested_params()
+            wallet = self.login_user(username, password)
+            sender_private_key = self.get_private_key(wallet, sender_address)
+            # Create opt-in transaction
+            # asset transfer from me to me for asset id we want to opt-in to with amt==0
+            optin_txn = transaction.AssetOptInTxn(
+                sender=sender_address, sp=sp, index=nft_id
+            )
+            signed_optin_txn = optin_txn.sign(sender_private_key)
+            txid = algod_client.send_transaction(signed_optin_txn)
+            logging.info(f"Sent opt in transaction with txid: {txid}")
+
+            # Wait for the transaction to be confirmed
+            results = transaction.wait_for_confirmation(algod_client, txid, 4)
+            logging.info(f"Result confirmed in round: {results['confirmed-round']}")
+            return results
+        except Exception as e:
+            logging.error(f"Error optin asset: {e}")
+            return None
+
+    def transfer_asset(self, sender_address, username, password, receiver_address, nft_id):
+      try:
+        algod_client = self.set_up_algod_client()
+        sp = algod_client.suggested_params()
+        # Create transfer transaction
+        wallet = self.login_user(username, password)
+        sender_private_key = self.get_private_key(wallet, sender_address)
         
+        xfer_txn = transaction.AssetTransferTxn(
+            sender=sender_address,
+            sp=sp,
+            receiver=receiver_address,
+            amt=1,
+            index=nft_id,
+        )
+        signed_xfer_txn = xfer_txn.sign(sender_private_key)
+        txid = algod_client.send_transaction(signed_xfer_txn)
+        logging.info(f"Sent transfer transaction with txid: {txid}")
+
+        results = transaction.wait_for_confirmation(algod_client, txid, 4)
+        logging.info(f"Result confirmed in round: {results['confirmed-round']}")
+        return results
+      except Exception as e:
+            logging.error(f"Error transfering asset: {e}")
+            return None
+        
+    def revoke_asset(self, sender_address, sender_private_key, nft_id, receiver_address):
+        try:
+            algod_client = self.set_up_algod_client()
+            sp = algod_client.suggested_params()
+            # Create clawback transaction to freeze the asset in acct2 balance
+            clawback_txn = transaction.AssetTransferTxn(
+                sender=sender_address,
+                sp=sp,
+                receiver=sender_address,
+                amt=1,
+                index=nft_id,
+                revocation_target=receiver_address,
+            )
+            signed_clawback_txn = clawback_txn.sign(sender_private_key)
+            txid = algod_client.send_transaction(signed_clawback_txn)
+            print(f"Sent clawback transaction with txid: {txid}")
+
+            results = transaction.wait_for_confirmation(algod_client, txid, 4)
+            print(f"Result confirmed in round: {results['confirmed-round']}")
+
+        except Exception as e:
+            logging.error(f"Error transfering asset: {e}")
+            return None

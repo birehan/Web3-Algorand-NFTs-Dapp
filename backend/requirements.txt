@@ -7,3 +7,7 @@ psycopg2-binary==2.9.9
 py-algorand-sdk==2.5.0
 flask_bcrypt==1.0.1
 flask_jwt_extended==4.6.0
+requests==2.31.0
+Pillow==10.2.0
+opencv-python==4.9.0.80
+numpy==1.26.3

@@ -3,8 +3,9 @@ from dotenv import load_dotenv
 import os
 from logger import logger
 import cv2
-import numpy as np
 from PIL import Image, ImageDraw, ImageFont
+
+import numpy as np
 from io import BytesIO
 import requests
 from typing import Optional
