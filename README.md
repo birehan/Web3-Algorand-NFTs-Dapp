@@ -13,7 +13,7 @@ End-to-end Web3 dapps on the Algorand Blockchain that will help 10 Academy gener
 <img alt="" src="https://github.com/birehan/Web3-Algorand-NFTs-Dapp/blob/main/screenshots/Screenshot%20from%202024-01-13%2019-04-07.png" />
 
 ## Issuer Certificates
-<img alt="" src="https://github.com/birehan/Web3-Algorand-NFTs-Dapp/blob/main/screenshots/Screenshot%20from%202024-01-13%2019-36-41.png" />
+<img alt="" src="https://github.com/birehan/Web3-Algorand-NFTs-Dapp/blob/main/screenshots/Screenshot%20from%202024-01-13%2019-42-29.png" />
 
 ## Trainee Certificates
 <img alt="" src="https://github.com/birehan/Web3-Algorand-NFTs-Dapp/blob/main/screenshots/Screenshot%20from%202024-01-13%2019-34-04.png" />
