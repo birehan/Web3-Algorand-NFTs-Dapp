@@ -4,6 +4,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from challenge_api import challenge_bp
+from certificate_api import certificate_bp
 from models import db
 from user_api import register_user, login_user, logout_user
 
@@ -29,7 +30,7 @@ app.route('/api/v1/login', methods=['POST'])(login_user)
 app.route('/api/v1/logout', methods=['GET'])(logout_user)
 
 app.register_blueprint(challenge_bp, url_prefix='/api/v1')  # Register the challenge_bp Blueprint
-
+app.register_blueprint(certificate_bp, url_prefix='/api/v1')  # Register the challenge_bp Blueprint
 
 if __name__ == '__main__':
     app.run()

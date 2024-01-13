@@ -1,11 +1,18 @@
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required
-from models import Challenge, Certificate
-from flask_sqlalchemy import SQLAlchemy
+from models import Challenge
 from flask import Blueprint
 from models import db
 
 challenge_bp = Blueprint('challenge', __name__)
+
+def generate_response(is_success, value=None, error=None):
+    response = {
+        "isSuccess": is_success,
+        "value": value,
+        "error": error
+    }
+    return jsonify(response)
 
 @challenge_bp.route('/challenges', methods=['GET'])
 def get_challenges():
@@ -24,11 +31,10 @@ def get_challenges():
             }
             challenge_list.append(challenge_info)
 
-        return jsonify({'data': challenge_list, "message": "get all challenges successfully."}), 200
+        return generate_response(True, challenge_list, None), 200
 
     except Exception as e:
-        return jsonify({"message": f"Error retrieving challenges: {e}", "data": ""}), 500
-
+        return generate_response(False, None, f"Error retrieving challenges: {e}"), 500
 
 @challenge_bp.route('/challenges/<int:challenge_id>', methods=['GET'])
 def get_challenge_by_id(challenge_id):
@@ -36,7 +42,7 @@ def get_challenge_by_id(challenge_id):
         challenge = Challenge.query.get(challenge_id)
 
         if not challenge:
-            return jsonify({"message": "Challenge not found", "data": ""}), 404
+            return generate_response(False, None, "Challenge not found"), 404
 
         challenge_info = {
             'id': challenge.id,
@@ -47,10 +53,10 @@ def get_challenge_by_id(challenge_id):
             'certificates': [certificate.id for certificate in challenge.certificates]
         }
 
-        return jsonify(challenge_info), 200
+        return generate_response(True, challenge_info, None), 200
 
     except Exception as e:
-        return jsonify({"message": f"Error retrieving challenge: {e}", "data": ""}), 500
+        return generate_response(False, None, f"Error retrieving challenge: {e}"), 500
     
 @challenge_bp.route('/challenges', methods=['POST'])
 @jwt_required()
@@ -61,7 +67,7 @@ def create_challenge():
         week_number = request.json.get('week_number')
         batch_number = request.json.get('batch_number')
         if not title or not description or week_number  < 0:
-            return jsonify({"message": "Missing required fields", "data": ""}), 400
+            return generate_response(False, None, "Missing required fields"), 400
 
         new_challenge = Challenge(
             title=title,
@@ -77,7 +83,7 @@ def create_challenge():
         created_challenge = Challenge.query.get(new_challenge.id)
 
         if not created_challenge:
-            return jsonify({"message": "Error fetching created challenge", "data": ""}), 500
+            return generate_response(False, None, "Error fetching created challenge"), 500
 
         challenge_info = {
             'id': created_challenge.id,
@@ -88,11 +94,10 @@ def create_challenge():
             'certificates': [certificate.id for certificate in created_challenge.certificates]
         }
 
-
-        return jsonify({"message": "Challenge created successfully", "data": challenge_info}), 201
+        return generate_response(True, challenge_info, None), 201
 
     except Exception as e:
-        return jsonify({"message": f"Error creating challenge: {e}", "data": ""}), 500
+        return generate_response(False, None, f"Error creating challenge: {e}"), 500
 
 @challenge_bp.route('/challenges/<int:challenge_id>', methods=['PUT'])
 @jwt_required()
@@ -106,7 +111,7 @@ def update_challenge(challenge_id):
         challenge = Challenge.query.get(challenge_id)
 
         if not challenge:
-            return jsonify({"message": "Challenge not found", "data": ""}), 404
+            return generate_response(False, None, "Challenge not found"), 404
 
         challenge.title = title if title else challenge.title
         challenge.description = description if description else challenge.description
@@ -124,12 +129,10 @@ def update_challenge(challenge_id):
             'certificates': [certificate.id for certificate in challenge.certificates]
         }
 
-        return jsonify({"message": "Challenge updated successfully", "data": challenge_info}), 200
+        return generate_response(True, challenge_info, None), 200
 
     except Exception as e:
-        return jsonify({"message": f"Error updating challenge: {e}", "data": ""}), 500
-
-
+        return generate_response(False, None, f"Error updating challenge: {e}"), 500
 
 @challenge_bp.route('/challenges/<int:challenge_id>', methods=['DELETE'])
 @jwt_required()
@@ -138,7 +141,7 @@ def delete_challenge(challenge_id):
         challenge = Challenge.query.get(challenge_id)
 
         if not challenge:
-            return jsonify({"message": "Challenge not found"}), 404
+            return generate_response(False, None, "Challenge not found"), 404
 
         # Optionally, you can add additional checks here (e.g., user permission)
 
@@ -154,8 +157,7 @@ def delete_challenge(challenge_id):
             'certificates': [certificate.id for certificate in challenge.certificates]
         }
 
-
-        return jsonify({"message": "Challenge deleted successfully", "data": challenge_info}), 200
+        return generate_response(True, challenge_info, None), 200
 
     except Exception as e:
-        return jsonify({"message": f"Error deleting challenge: {e}", "data": ""}), 500
+        return generate_response(False, None, f"Error deleting challenge: {e}"), 500
